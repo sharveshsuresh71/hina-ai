@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as NotesRouteImport } from './routes/notes'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as UtilitiesRouteImport } from './routes/utilities'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
@@ -30,6 +31,11 @@ const NotesRoute = NotesRouteImport.update({
   path: '/notes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UtilitiesRoute = UtilitiesRouteImport.update({
   id: '/utilities',
   path: '/utilities',
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
   '/notes': typeof NotesRoute
+  '/settings': typeof SettingsRoute
   '/utilities': typeof UtilitiesRoute
   '/api/chat': typeof ApiChatRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
   '/notes': typeof NotesRoute
+  '/settings': typeof SettingsRoute
   '/utilities': typeof UtilitiesRoute
   '/api/chat': typeof ApiChatRoute
 }
@@ -60,21 +68,30 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
   '/notes': typeof NotesRoute
+  '/settings': typeof SettingsRoute
   '/utilities': typeof UtilitiesRoute
   '/api/chat': typeof ApiChatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/chat' | '/notes' | '/utilities' | '/api/chat'
+  fullPaths: '/' | '/chat' | '/notes' | '/settings' | '/utilities' | '/api/chat'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/chat' | '/notes' | '/utilities' | '/api/chat'
-  id: '__root__' | '/' | '/chat' | '/notes' | '/utilities' | '/api/chat'
+  to: '/' | '/chat' | '/notes' | '/settings' | '/utilities' | '/api/chat'
+  id:
+    | '__root__'
+    | '/'
+    | '/chat'
+    | '/notes'
+    | '/settings'
+    | '/utilities'
+    | '/api/chat'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ChatRoute: typeof ChatRoute
   NotesRoute: typeof NotesRoute
+  SettingsRoute: typeof SettingsRoute
   UtilitiesRoute: typeof UtilitiesRoute
   ApiChatRoute: typeof ApiChatRoute
 }
@@ -102,6 +119,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/utilities': {
       id: '/utilities'
       path: '/utilities'
@@ -123,6 +147,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ChatRoute: ChatRoute,
   NotesRoute: NotesRoute,
+  SettingsRoute: SettingsRoute,
   UtilitiesRoute: UtilitiesRoute,
   ApiChatRoute: ApiChatRoute,
 }
