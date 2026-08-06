@@ -260,44 +260,22 @@ function ColorPicker() {
   );
 }
 
-function Timer() {
+function Stopwatch() {
   const [seconds, setSeconds] = useState(0);
   const [running, setRunning] = useState(false);
-  useMemo(() => seconds, [seconds]);
-  useState(() => 0);
-  // simple stopwatch loop
-  if (typeof window !== "undefined") {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-  }
+
+  useEffect(() => {
+    if (!running) return;
+    const id = setInterval(() => setSeconds((s) => s + 1), 1000);
+    return () => clearInterval(id);
+  }, [running]);
+
+  const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const ss = String(seconds % 60).padStart(2, "0");
+
   return (
     <div className={panel}>
       <h3 className="font-display text-sm uppercase tracking-[0.2em]">Stopwatch</h3>
-      <StopwatchBody
-        seconds={seconds}
-        setSeconds={setSeconds}
-        running={running}
-        setRunning={setRunning}
-      />
-    </div>
-  );
-}
-
-function StopwatchBody({
-  seconds,
-  setSeconds,
-  running,
-  setRunning,
-}: {
-  seconds: number;
-  setSeconds: (fn: (s: number) => number) => void;
-  running: boolean;
-  setRunning: (v: boolean) => void;
-}) {
-  useIntervalEffect(running, () => setSeconds((s) => s + 1));
-  const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
-  const ss = String(seconds % 60).padStart(2, "0");
-  return (
-    <>
       <p className="font-display text-4xl tabular-nums text-gradient">
         {mm}:{ss}
       </p>
@@ -312,37 +290,17 @@ function StopwatchBody({
         <button
           onClick={() => {
             setRunning(false);
-            setSeconds(() => 0);
+            setSeconds(0);
           }}
           className="rounded-full border border-glass-border px-5 py-2 text-sm"
         >
           Reset
         </button>
       </div>
-    </>
+    </div>
   );
 }
 
-function useIntervalEffect(active: boolean, cb: () => void) {
-  const [, force] = useState(0);
-  useMemoEffect(active, cb, force);
-}
-
-function useMemoEffect(active: boolean, cb: () => void, _force: (n: number) => void) {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const ref = useMemo(() => ({ cb }), [cb]);
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  useReactEffect(active, ref);
-}
-
-import { useEffect as useReactEffectRaw } from "react";
-function useReactEffect(active: boolean, ref: { cb: () => void }) {
-  useReactEffectRaw(() => {
-    if (!active) return;
-    const id = setInterval(() => ref.cb(), 1000);
-    return () => clearInterval(id);
-  }, [active, ref]);
-}
 
 function Utilities() {
   return (
