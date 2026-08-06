@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -325,7 +325,7 @@ function Utilities() {
           <Calculator />
           <Converter />
           <PasswordGenerator />
-          <Timer />
+          <Stopwatch />
         </TabsContent>
         <TabsContent value="dev" className="mt-6 grid gap-5 lg:grid-cols-2">
           <JsonFormatter />
