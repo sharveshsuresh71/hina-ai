@@ -10,6 +10,10 @@ const stateLabel: Record<HinaState, string> = {
   speaking: "Speaking",
 };
 
+/**
+ * Arc-reactor style HUD core inspired by heads-up display interfaces:
+ * segmented rings, tick marks and a glowing center.
+ */
 export function HinaOrb({
   state = "idle",
   size = 240,
@@ -22,7 +26,8 @@ export function HinaOrb({
   showLabel?: boolean;
 }) {
   const active = state !== "idle";
-  const bars = Array.from({ length: 28 });
+  const ticks = Array.from({ length: 60 });
+  const segments = Array.from({ length: 12 });
 
   return (
     <div className={cn("flex flex-col items-center gap-4", className)}>
@@ -31,35 +36,74 @@ export function HinaOrb({
         style={{ width: size, height: size }}
         aria-label={`HINA ${stateLabel[state]}`}
       >
-        {/* outer pulse rings */}
+        {/* pulse rings */}
         {[0, 1, 2].map((i) => (
           <span
             key={i}
-            className="absolute rounded-full border border-primary/40"
+            className="absolute rounded-full border border-primary/50"
             style={{
-              width: size * 0.72,
-              height: size * 0.72,
+              width: size * 0.66,
+              height: size * 0.66,
               animation: `hina-pulse-ring ${active ? 2.2 : 3.6}s cubic-bezier(0.3,0,0.5,1) ${i * 0.7}s infinite`,
             }}
           />
         ))}
 
-        {/* rotating rings */}
+        {/* tick ring */}
+        <svg
+          viewBox="0 0 200 200"
+          className="absolute inset-0 size-full"
+          style={{ animation: "hina-spin-slow 40s linear infinite" }}
+        >
+          {ticks.map((_, i) => {
+            const long = i % 5 === 0;
+            const a = (i / ticks.length) * Math.PI * 2;
+            const r1 = long ? 84 : 89;
+            return (
+              <line
+                key={i}
+                x1={100 + Math.cos(a) * r1}
+                y1={100 + Math.sin(a) * r1}
+                x2={100 + Math.cos(a) * 95}
+                y2={100 + Math.sin(a) * 95}
+                stroke="currentColor"
+                className={long ? "text-primary" : "text-primary/40"}
+                strokeWidth={long ? 2 : 1}
+              />
+            );
+          })}
+        </svg>
+
+        {/* segmented arcs */}
+        <svg
+          viewBox="0 0 200 200"
+          className="absolute inset-0 size-full text-primary"
+          style={{ animation: "hina-spin-slow 18s linear reverse infinite" }}
+        >
+          {segments.map((_, i) => {
+            const a0 = (i / segments.length) * Math.PI * 2;
+            const a1 = a0 + 0.34;
+            const r = 76;
+            return (
+              <path
+                key={i}
+                d={`M ${100 + Math.cos(a0) * r} ${100 + Math.sin(a0) * r} A ${r} ${r} 0 0 1 ${100 + Math.cos(a1) * r} ${100 + Math.sin(a1) * r}`}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={i % 3 === 0 ? 5 : 2}
+                opacity={i % 3 === 0 ? 0.9 : 0.45}
+                strokeLinecap="round"
+              />
+            );
+          })}
+        </svg>
+
         <span
           className="absolute rounded-full border border-dashed border-secondary/40"
           style={{
-            width: size * 0.92,
-            height: size * 0.92,
-            animation: "hina-spin-slow 24s linear infinite",
-          }}
-        />
-        <span
-          className="absolute rounded-full border border-accent/30"
-          style={{
-            width: size * 0.82,
-            height: size * 0.82,
-            borderStyle: "dotted",
-            animation: "hina-spin-slow 16s linear reverse infinite",
+            width: size * 0.58,
+            height: size * 0.58,
+            animation: "hina-spin-slow 26s linear infinite",
           }}
         />
 
@@ -67,19 +111,19 @@ export function HinaOrb({
         <motion.div
           className="relative grid place-items-center rounded-full"
           style={{
-            width: size * 0.62,
-            height: size * 0.62,
+            width: size * 0.42,
+            height: size * 0.42,
             background:
-              "radial-gradient(circle at 35% 30%, var(--color-primary), var(--color-secondary) 55%, var(--color-accent) 110%)",
+              "radial-gradient(circle at 50% 50%, var(--color-foreground) 0%, var(--color-primary) 38%, oklch(0.3 0.14 25) 78%)",
             boxShadow: "var(--shadow-glow)",
           }}
           animate={
             state === "speaking"
-              ? { scale: [1, 1.06, 0.98, 1.04, 1] }
+              ? { scale: [1, 1.07, 0.98, 1.05, 1] }
               : state === "listening"
                 ? { scale: [1, 1.09, 1] }
                 : state === "thinking"
-                  ? { scale: [1, 1.02, 1], rotate: [0, 6, -6, 0] }
+                  ? { scale: [1, 1.03, 1], rotate: [0, 6, -6, 0] }
                   : { scale: [1, 1.03, 1] }
           }
           transition={{
@@ -89,21 +133,21 @@ export function HinaOrb({
           }}
         >
           <div
-            className="absolute inset-[10%] rounded-full opacity-70 mix-blend-overlay"
+            className="absolute inset-[8%] rounded-full opacity-60 mix-blend-overlay"
             style={{
               background:
-                "conic-gradient(from 0deg, transparent, var(--color-background), transparent 60%)",
-              animation: "hina-spin-slow 8s linear infinite",
+                "conic-gradient(from 0deg, transparent, var(--color-background), transparent 55%)",
+              animation: "hina-spin-slow 6s linear infinite",
             }}
           />
           {/* waveform */}
           <div className="relative flex h-1/3 items-center gap-[3px]">
-            {bars.slice(0, 14).map((_, i) => {
-              const base = 12 + Math.sin(i) * 6;
+            {Array.from({ length: 11 }).map((_, i) => {
+              const base = 9 + Math.sin(i) * 5;
               return (
                 <motion.span
                   key={i}
-                  className="w-[3px] rounded-full bg-background/80"
+                  className="w-[2px] rounded-full bg-background/85"
                   animate={{
                     height:
                       state === "speaking"
@@ -127,14 +171,14 @@ export function HinaOrb({
       </div>
 
       {showLabel && (
-        <div className="flex items-center gap-2 rounded-full border border-glass-border bg-glass px-4 py-1.5 text-xs uppercase tracking-[0.28em] text-muted-foreground">
+        <div className="flex items-center gap-2 border border-glass-border bg-glass px-4 py-1.5 hud-label">
           <span
             className={cn(
               "size-1.5 rounded-full",
               state === "speaking"
                 ? "bg-accent"
                 : state === "listening"
-                  ? "bg-success"
+                  ? "bg-secondary"
                   : state === "thinking"
                     ? "bg-warning"
                     : "bg-primary",
