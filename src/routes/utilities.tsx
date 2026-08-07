@@ -238,7 +238,7 @@ function JsonFormatter() {
 }
 
 function ColorPicker() {
-  const [color, setColor] = useState("#00E5FF");
+  const [color, setColor] = useState("#FFFFFF");
   const rgb = (() => {
     const n = parseInt(color.slice(1), 16);
     return `rgb(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255})`;

@@ -114,7 +114,7 @@ export function HinaOrb({
             width: size * 0.42,
             height: size * 0.42,
             background:
-              "radial-gradient(circle at 50% 50%, var(--color-foreground) 0%, var(--color-primary) 38%, oklch(0.3 0.14 25) 78%)",
+              "radial-gradient(circle at 50% 50%, var(--color-foreground) 0%, var(--color-primary) 38%, oklch(0.35 0 0) 78%)",
             boxShadow: "var(--shadow-glow)",
           }}
           animate={
