@@ -205,6 +205,7 @@ function Index() {
 
           <Link
             to="/chat"
+            search={{ q: undefined }}
             className="glow border border-primary bg-primary/15 px-8 py-3 font-display text-xs uppercase tracking-[0.3em] text-foreground transition-colors hover:bg-primary/30"
           >
             Engage HINA
