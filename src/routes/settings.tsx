@@ -60,13 +60,12 @@ function Settings() {
             </label>
             <select
               className={`${field} mt-2`}
-              value={settings.voiceURI}
+              value={settings.voiceURI || "sage"}
               onChange={(e) => update({ voiceURI: e.target.value })}
             >
-              <option value="">Automatic (female if available)</option>
-              {speech.voices.map((v) => (
-                <option key={v.voiceURI} value={v.voiceURI}>
-                  {v.name} — {v.lang}
+              {HINA_VOICES.map((v) => (
+                <option key={v.id} value={v.id}>
+                  {v.label}
                 </option>
               ))}
             </select>
