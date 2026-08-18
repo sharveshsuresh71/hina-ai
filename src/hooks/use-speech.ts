@@ -24,6 +24,8 @@ export function useSpeech({
   const [supported, setSupported] = useState({ stt: false, tts: false });
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const ctxRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
     const w = window as any;
