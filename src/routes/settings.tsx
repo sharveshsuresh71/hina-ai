@@ -21,6 +21,15 @@ export const Route = createFileRoute("/settings")({
   component: Settings,
 });
 
+const HINA_VOICES = [
+  { id: "sage", label: "Sage — mature, calm, composed (default)" },
+  { id: "coral", label: "Coral — warm mature woman" },
+  { id: "shimmer", label: "Shimmer — smooth, low, elegant" },
+  { id: "ballad", label: "Ballad — expressive, refined" },
+  { id: "nova", label: "Nova — brighter, younger" },
+  { id: "alloy", label: "Alloy — neutral" },
+];
+
 const field =
   "w-full rounded-xl border border-input bg-background/40 px-4 py-2.5 text-sm outline-none focus:border-primary/50";
 
@@ -60,13 +69,12 @@ function Settings() {
             </label>
             <select
               className={`${field} mt-2`}
-              value={settings.voiceURI}
+              value={settings.voiceURI || "sage"}
               onChange={(e) => update({ voiceURI: e.target.value })}
             >
-              <option value="">Automatic (female if available)</option>
-              {speech.voices.map((v) => (
-                <option key={v.voiceURI} value={v.voiceURI}>
-                  {v.name} — {v.lang}
+              {HINA_VOICES.map((v) => (
+                <option key={v.id} value={v.id}>
+                  {v.label}
                 </option>
               ))}
             </select>
